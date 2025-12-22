@@ -57,6 +57,22 @@
     "48": "icon128.png",
     "128": "icon128.png"
   },
+  "commands": {
+    "direct-export": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+E",
+        "mac": "Command+Shift+E"
+      },
+      "description": "直接エクスポート"
+    },
+    "copy-data": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+C",
+        "mac": "Command+Shift+C"
+      },
+      "description": "クリップボードにコピー"
+    }
+  },
   "host_permissions": [
     "https://*.ebay.com/*",
     "https://*.ebay.co.jp/*",

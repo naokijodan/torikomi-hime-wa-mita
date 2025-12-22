@@ -7016,6 +7016,71 @@ function isNoiseText(text) {
   console.log('  window.postMessage({type: "TORIKOMI_CLICK_EXPORT"}, "*") // ボタンクリック');
 
   // ==========================================
+  // キーボードショートカット対応
+  // Command+Shift+E: 直接エクスポート
+  // Command+Shift+C: クリップボードにコピー
+  // ==========================================
+  console.log('⌨️ キーボードショートカットリスナーを設定');
+
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    console.log('⌨️ メッセージ受信:', request);
+
+    // direct-export: 直接エクスポート (Command+Shift+E)
+    if (request.action === 'direct-export') {
+      console.log('⌨️ キーボードショートカット: 直接エクスポート');
+
+      if (!extractedData) {
+        console.error('❌ extractedDataが存在しません');
+        showNotification('エラー', '商品データが取得されていません', 'error', colors);
+        sendResponse({ success: false, error: '商品データが取得されていません' });
+        return true;
+      }
+
+      // エクスポート実行
+      exportToSpreadsheet(extractedData, currentSite, colors)
+        .then(() => {
+          console.log('✅ キーボードショートカットによるエクスポート完了');
+          sendResponse({ success: true, message: 'エクスポート完了' });
+        })
+        .catch((error) => {
+          console.error('❌ エクスポートエラー:', error);
+          sendResponse({ success: false, error: error.message });
+        });
+
+      return true; // 非同期レスポンス
+    }
+
+    // copy-data: クリップボードにコピー (Command+Shift+C)
+    if (request.action === 'copy-data') {
+      console.log('⌨️ キーボードショートカット: クリップボードにコピー');
+
+      if (!extractedData) {
+        console.error('❌ extractedDataが存在しません');
+        showNotification('エラー', '商品データが取得されていません', 'error', colors);
+        sendResponse({ success: false, error: '商品データが取得されていません' });
+        return true;
+      }
+
+      // コピー実行
+      copyToClipboard(extractedData, currentSite, colors, settings)
+        .then(() => {
+          console.log('✅ キーボードショートカットによるコピー完了');
+          sendResponse({ success: true, message: 'コピー完了' });
+        })
+        .catch((error) => {
+          console.error('❌ コピーエラー:', error);
+          sendResponse({ success: false, error: error.message });
+        });
+
+      return true; // 非同期レスポンス
+    }
+  });
+
+  console.log('✅ キーボードショートカット設定完了:');
+  console.log('  Command+Shift+E (Mac) / Ctrl+Shift+E (Win): 直接エクスポート');
+  console.log('  Command+Shift+C (Mac) / Ctrl+Shift+C (Win): クリップボードにコピー');
+
+  // ==========================================
   // 外部リンクボタン機能（商品ページのみ）
   // ==========================================
   console.log('🔗 外部リンク機能を初期化');

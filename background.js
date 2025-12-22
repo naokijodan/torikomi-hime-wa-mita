@@ -1,7 +1,25 @@
 // Universal Product Scraper - Background Script
 // Webhook送信とメッセージ処理
 
-console.log('Background script loaded (Universal Scraper)');
+console.log('Background script loaded (とりこみ姫)');
+
+// キーボードショートカットリスナー
+chrome.commands.onCommand.addListener((command) => {
+  console.log(`⌨️ キーボードショートカット受信: ${command}`);
+
+  // アクティブなタブにメッセージを送信
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs[0]) {
+      chrome.tabs.sendMessage(tabs[0].id, { action: command }, (response) => {
+        if (chrome.runtime.lastError) {
+          console.error('❌ メッセージ送信エラー:', chrome.runtime.lastError.message);
+        } else {
+          console.log('✅ コマンド実行結果:', response);
+        }
+      });
+    }
+  });
+});
 
 // メッセージリスナー
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
