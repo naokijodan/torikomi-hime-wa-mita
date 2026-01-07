@@ -1599,8 +1599,13 @@ function isNoiseText(text) {
     // キーワード検出
     // alertKeywords（オプション画面の「除外キーワード」）を赤ハイライト用に使用
     // popupKeywords（オプション画面の「注目キーワード」）を黄色ハイライト用に使用
-    const excludeKeywords = settings.alertKeywords ? settings.alertKeywords.split('\n').filter(k => k.trim()) : [];
-    const attentionKeywords = settings.popupKeywords ? settings.popupKeywords.split('\n').filter(k => k.trim()) : [];
+    // 配列または文字列どちらでも対応
+    const excludeKeywords = settings.alertKeywords
+      ? (Array.isArray(settings.alertKeywords) ? settings.alertKeywords : settings.alertKeywords.split('\n')).filter(k => k.trim())
+      : [];
+    const attentionKeywords = settings.popupKeywords
+      ? (Array.isArray(settings.popupKeywords) ? settings.popupKeywords : settings.popupKeywords.split('\n')).filter(k => k.trim())
+      : [];
 
     // タイトルと説明文の両方でキーワード検出
     const title = data.title || data.name || '';
